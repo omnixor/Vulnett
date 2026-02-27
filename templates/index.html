@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnett | Professional Security Analytics</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container animate">
+        <nav>
+            <div class="brand">
+                <img src="/static/logo.png" alt="Vulnett Logo" style="height: 40px;">
+            </div>
+            <div class="nav-links">
+                <a href="/download" class="btn btn-primary">
+                    Download Intelligence Report
+                </a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <h1>Surface Intelligence.</h1>
+            <p>Autonomous security audit for <b>{{ target }}</b>. Identifying exposures, misconfigurations, and active
+                signatures across the digital perimeter.</p>
+        </section>
+
+        <div class="grid">
+            <!-- Risk Card -->
+            <div class="card col-4">
+                <span class="card-title">Security Posture</span>
+                <div class="value" style="color: var(--{{ level|lower if level != 'Critical' else 'critical' }});">
+                    {{ level }}
+                </div>
+                <div style="margin-top: 2.5rem; color: var(--text-secondary); font-size: 0.95rem;">
+                    Risk Score Index: <b style="color: var(--text-primary);">{{ score }}</b> / 100
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                    Updated: {{ timestamp }}
+                </div>
+            </div>
+
+            <!-- Threat Matrix -->
+            <div class="card col-8">
+                <span class="card-title">Signature Distribution</span>
+                <div class="chart-container">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Findings -->
+            <div class="card col-12">
+                <span class="card-title">Vulnerability Intelligence Findings</span>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>IDENTIFIER</th>
+                                <th>SEVERITY</th>
+                                <th>SOURCE / HOST</th>
+                                <th>ASSET INTEL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for f in findings %}
+                            <tr>
+                                <td style="font-weight: 600;">{{ f.name }}</td>
+                                <td><span class="badge badge-{{ f.severity }}">{{ f.severity }}</span></td>
+                                <td style="color: var(--text-secondary); font-size: 0.85rem;">{{ f.host }}</td>
+                                <td style="font-size: 0.85rem; line-height: 1.5;">
+                                    <b>Observation:</b> {{ f.description }} <br>
+                                    <span style="color: var(--low); font-weight: 600; font-size: 0.75rem;">STATUS:
+                                        TRIAGED</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if not findings %}
+                            <tr>
+                                <td colspan="4"
+                                    style="text-align: center; padding: 4rem; color: var(--text-secondary);">
+                                    No deterministic security threats identified in the public surface.
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Infrastructure -->
+            <div class="card col-4">
+                <span class="card-title">Asset Inventory</span>
+                <div style="max-height: 400px; overflow-y: auto; padding-right: 0.5rem;">
+                    {% for p in ports %}
+                    <div
+                        style="display: flex; justify-content: space-between; padding: 1.2rem 0; border-bottom: 1px solid var(--border);">
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-weight: 600; font-size: 0.9rem;">PORT {{ p.port }}</span>
+                            <span style="color: var(--text-secondary); font-size: 0.75rem;">{{ p.product if p.product
+                                else 'TCP Service' }}</span>
+                        </div>
+                        <span style="color: var(--accent); font-weight: 700; font-size: 0.8rem;">{{ p.service|upper
+                            }}</span>
+                    </div>
+                    {% endfor %}
+                    {% if not ports %}
+                    <div style="text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 0.8rem;">No
+                        active services identified.</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- intelligence Insights -->
+            <div class="card col-8">
+                <span class="card-title">Intelligence mapping</span>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                    <div
+                        style="background: rgba(48,209,88,0.05); padding: 1.2rem; border-radius: 18px; border: 1px solid rgba(48,209,88,0.15);">
+                        <div
+                            style="font-size: 0.65rem; color: var(--low); font-weight: 700; text-transform: uppercase;">
+                            Compliance</div>
+                        <div style="font-size: 1rem; font-weight: 600; margin-top: 0.2rem;">ISO 27001</div>
+                    </div>
+                    <div
+                        style="background: rgba(255,59,48,0.05); padding: 1.2rem; border-radius: 18px; border: 1px solid rgba(255,59,48,0.15);">
+                        <div
+                            style="font-size: 0.65rem; color: var(--critical); font-weight: 700; text-transform: uppercase;">
+                            Exposure</div>
+                        <div style="font-size: 1rem; font-weight: 600; margin-top: 0.2rem;">OWASP TOP 10</div>
+                    </div>
+                    <div
+                        style="background: rgba(0,122,255,0.05); padding: 1.2rem; border-radius: 18px; border: 1px solid rgba(0,122,255,0.15);">
+                        <div
+                            style="font-size: 0.65rem; color: var(--accent); font-weight: 700; text-transform: uppercase;">
+                            Methodology</div>
+                        <div style="font-size: 1rem; font-weight: 600; margin-top: 0.2rem;">VULNETT ENGINE</div>
+                    </div>
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7;">
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 1rem;">
+                            <b style="color: var(--text-primary);">Strategic Recommendation:</b>
+                            {% if score > 30 %}
+                            Immediate remediation of high-severity findings is advised to prevent exploit chaining.
+                            {% else %}
+                            Baseline security posture is stable. Continue monitoring for new service exposures.
+                            {% endif %}
+                        </li>
+                        <li><b style="color: var(--text-primary);">Audit Scope:</b> Full external TCP scan +
+                            signature-based CVE matching for <i>{{ target }}</i>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer
+            style="text-align: center; margin-top: 6rem; padding-bottom: 2rem; color: var(--text-secondary); font-size: 0.75rem; letter-spacing: 0.5px;">
+            &copy; 2026 VULNETT SECURITY SYSTEMS. ENTERPRISE GRADE INTELLIGENCE.
+        </footer>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Critical', 'High', 'Medium', 'Low'],
+                datasets: [{
+                    label: 'Threat Count',
+                    data: [{{ stats.critical }}, {{ stats.high }}, {{ stats.medium }}, {{ stats.low }}],
+            backgroundColor: ['#ff453a', '#ff9f0a', '#ffd60a', '#30d158'],
+            borderRadius: 8,
+            barThickness: 40
+                }]
+            },
+            options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8e8e93' } },
+                x: { grid: { display: false }, ticks: { color: '#8e8e93' } }
+            }
+        }
+        });
+    </script>
+</body>
+
+</html>

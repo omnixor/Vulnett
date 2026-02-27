@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnett | Intelligence Gateway</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body,
+        html {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .nexus-box {
+            text-align: left;
+            max-width: 500px;
+            width: 100%;
+            padding: 2.5rem;
+            background: var(--bg-secondary);
+            border-radius: 32px;
+            border: 1px solid var(--border);
+        }
+
+        .input-group {
+            position: relative;
+            margin-top: 2rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 1.2rem 1.5rem;
+            border-radius: 18px;
+            color: #fff;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 30px rgba(0, 122, 255, 0.15);
+        }
+
+        .btn-large {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            background: #fff;
+            color: #000;
+            border-radius: 18px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-large:hover {
+            transform: scale(1.02);
+            background: #f5f5f7;
+        }
+
+        .brand-logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-logo span {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* Loading Overlay */
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .percentage-counter {
+            color: #fff;
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: -3px;
+        }
+
+        .progress-container {
+            width: 400px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 2.5rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #fff;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .process-preview {
+            color: var(--text-secondary);
+            font-family: 'SF Mono', monospace;
+            font-size: 0.85rem;
+            height: 20px;
+            text-align: center;
+            opacity: 0.6;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes fadeInUpMini {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .log-entry {
+            animation: fadeInUpMini 0.4s forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loader">
+        <div class="brand-logo" style="margin-bottom: 1.5rem;">
+            <img src="/static/logo.png" alt="Vulnett Logo" style="height: 60px;">
+        </div>
+        <div class="percentage-counter" id="p-count">0%</div>
+        <div class="subtitle" id="status-header"
+            style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px;">Orchestrating Audit</div>
+
+        <div class="progress-container">
+            <div id="p-bar" class="progress-bar"></div>
+        </div>
+
+        <div id="process-logs" class="process-preview">
+            Initializing secure handshake...
+        </div>
+    </div>
+
+
+    <div class="nexus-box animate">
+        <div class="brand-logo">
+            <img src="/static/logo.png" alt="Vulnett Logo" style="height: 50px; margin-bottom: 10px; display: block;">
+        </div>
+        <div class="subtitle">Nexus Intelligence Gateway</div>
+
+        <form id="scanForm" action="/initiate_scan" method="POST">
+            <div class="input-group">
+                <input type="text" id="targetInput" name="target" placeholder="Enter target domain (e.g. example.com)"
+                    required>
+            </div>
+            <button type="submit" class="btn-large">Analyze Perimeter</button>
+        </form>
+    </div>
+
+    <script>
+        const logs = [
+            "Initializing Vulnett Nexus Protocol v4.2...",
+            "Establishing encrypted tunnel (AES-256)...",
+            "Launching Nmap Service Discovery (Top Ports)...",
+            "Analyzing perimeter response patterns...",
+            "Identifying service signatures and products...",
+            "Triggering Nuclei Vulnerability Intelligence...",
+            "Probing for critical CVE exposures...",
+            "Executing policy-based security audits...",
+            "Correlating threat vectors...",
+            "Compiling Intelligence Dashboard...",
+            "Finalizing Secure Link Generation..."
+        ];
+
+        document.getElementById('scanForm').addEventListener('submit', function (e) {
+            document.getElementById('loader').style.display = 'flex';
+
+            let progress = 0;
+            const pBar = document.getElementById('p-bar');
+            const pCount = document.getElementById('p-count');
+            const logBox = document.getElementById('process-logs');
+            const statusHeader = document.getElementById('status-header');
+
+            let logIndex = 0;
+            const interval = setInterval(() => {
+                progress += (Math.random() * 2);
+                if (progress > 99) progress = 99;
+
+                const displayProgress = Math.floor(progress);
+                pBar.style.width = displayProgress + '%';
+                pCount.innerText = displayProgress + '%';
+
+                if (logIndex < logs.length) {
+                    logBox.innerHTML = `<div class="log-entry">${logs[logIndex]}</div>`;
+                    if (progress > (logIndex + 1) * (100 / logs.length)) {
+                        logIndex++;
+                    }
+                }
+
+                if (progress > 30) statusHeader.innerText = "Network Discovery...";
+                if (progress > 60) statusHeader.innerText = "Auditing Vulnerabilities...";
+                if (progress > 85) statusHeader.innerText = "Finalizing Assets...";
+            }, 600);
+        });
+    </script>
+</body>
+
+</html>

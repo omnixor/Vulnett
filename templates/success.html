@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnett | Link Generated</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body,
+        html {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .success-box {
+            text-align: center;
+            max-width: 600px;
+            padding: 3rem;
+            background: var(--bg-secondary);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gen-link {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: -1px;
+        }
+
+        .gen-link:hover {
+            background: var(--accent);
+            color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 122, 255, 0.3);
+        }
+
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-tag {
+            background: rgba(48, 209, 88, 0.1);
+            color: var(--low);
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="success-box animate">
+        <div class="icon">✅</div>
+        <div class="status-tag">Intelligence Orchestrated</div>
+        <h2 style="margin-top: 1.5rem; font-size: 2rem; letter-spacing: -1px;">Nexus Link Ready.</h2>
+        <p style="color: var(--text-secondary); margin-top: 1rem;">Scanning for <b>{{ target }}</b> is complete. Your
+            secured intelligence dashboard is now accessible.</p>
+
+        <a href="{{ url }}" class="gen-link">Link Generated</a>
+
+        <div style="margin-top: 3rem; color: #444; font-size: 0.75rem;">
+            VULNETT SECURE TUNNEL PROTOCOL v4.2<br>
+            ENCRYPTION: AES-256-GCM
+        </div>
+    </div>
+</body>
+
+</html>

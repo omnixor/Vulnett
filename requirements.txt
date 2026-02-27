@@ -1,0 +1,22 @@
+flask
+pyngrok
+reportlab
+
+# ============================================================
+# VULNETT SECURITY ENGINE - DEPLOYMENT GUIDE
+# ============================================================
+#
+# 🚀 WINDOWS (Recommended):
+#    Simply double-click 'setup.bat' to install.
+#    Run via 'run_scanner.bat'.
+#
+# 🐧 LINUX:
+#    1. ./setup.sh
+#    2. source .venv/bin/activate
+#    3. python3 scanner.py
+#
+# 🔑 NGROK CONFIGURATION:
+#    If using cloud tunneling, run once:
+#    ngrok config add-authtoken <YOUR_TOKEN>
+#
+# ============================================================
