@@ -94,4 +94,4 @@ Internet access (for templates & ngrok)
 
 Authorized security auditing only. Unauthorized use is strictly prohibited.
 
-<p align="center"> <b>© 2026 Vulnett Security Systems</b><br> Enterprise-grade security. Minimal. Precise. </p> ```
+<p> align="center"> <b>© 2026 Vulnett Security Systems</b><br> Enterprise-grade security. Minimal. Precise. </p> ```
